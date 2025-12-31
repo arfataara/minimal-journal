@@ -10,7 +10,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 4000;
 // app is running at http://localhost:4000
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/journal";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/journal";
 // mongoDB names the database "journal"
 
 const NoteSchema = new mongoose.Schema({
