@@ -3,7 +3,9 @@ import axios from "axios";
 // 1. Configure the Axios instance
 const API = axios.create({
   // Use an environment variable for the backend URL
-  baseURL: process.env.REACT_APP_BACKEND_URL || "http://localhost:4000",
+  baseURL:
+    process.env.REACT_APP_BACKEND_URL ||
+    "https://minimal-journal-api.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },

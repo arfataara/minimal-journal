@@ -10,7 +10,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 4000;
 // app is running at http://localhost:4000
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/journal";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
 // mongoDB names the database "journal"
 
 const NoteSchema = new mongoose.Schema({
@@ -54,7 +54,7 @@ app.delete("/notes/:id", async (request, response) => {
 
 // connect DB then start server
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, { dbName: "journal" })
   .then(() => {
     console.log("MongoDB Connected");
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
