@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/minimal-journal/static/css/main.51f733d4.css",
-    "main.js": "/minimal-journal/static/js/main.a8c41fba.js",
+    "main.css": "/minimal-journal/static/css/main.ad8006bf.css",
+    "main.js": "/minimal-journal/static/js/main.94bdb313.js",
     "static/js/453.20359781.chunk.js": "/minimal-journal/static/js/453.20359781.chunk.js",
     "index.html": "/minimal-journal/index.html",
-    "main.51f733d4.css.map": "/minimal-journal/static/css/main.51f733d4.css.map",
-    "main.a8c41fba.js.map": "/minimal-journal/static/js/main.a8c41fba.js.map",
+    "main.ad8006bf.css.map": "/minimal-journal/static/css/main.ad8006bf.css.map",
+    "main.94bdb313.js.map": "/minimal-journal/static/js/main.94bdb313.js.map",
     "453.20359781.chunk.js.map": "/minimal-journal/static/js/453.20359781.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.51f733d4.css",
-    "static/js/main.a8c41fba.js"
+    "static/css/main.ad8006bf.css",
+    "static/js/main.94bdb313.js"
   ]
 }
