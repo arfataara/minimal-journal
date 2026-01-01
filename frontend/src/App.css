@@ -40,6 +40,7 @@
 .note-textarea {
   min-height: 80px;
   resize: vertical;
+  white-space: pre-wrap;
 }
 
 .note-card {
@@ -67,11 +68,20 @@ button {
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   cursor: pointer;
+  margin: 0 0.25rem 0 0.25rem;
 }
 
 button[disabled] {
   opacity: 0.6;
   cursor: default;
+}
+
+.green-button {
+  background: rgb(7, 193, 48);
+}
+
+.red-button {
+  background: rgb(170, 16, 27);
 }
 
 

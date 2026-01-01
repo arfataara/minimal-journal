@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchNotes, createNote, deleteNote } from "../api";
+import { fetchNotes, createNote, deleteNote, updateNote } from "../api";
 
 const Notes = () => {
     const [notes, setNotes] = useState([]);
@@ -7,6 +7,7 @@ const Notes = () => {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [editNoteId, setEditNoteId] = useState(undefined);
 
     useEffect(() => {
         const getNotes = async () => {
@@ -65,11 +66,78 @@ const Notes = () => {
         }
     };
 
+    const handleEdit = async (note) => {
+        try{
+            if(title !== "" || content !== ""){
+                alert("Save or clear unsaved note first.")
+                return;
+            }
+            
+            const existingNote = notes.find((n) => n._id === note._id);
+            if(!existingNote){
+                throw new Error("Could not find note");
+            }
+            setTitle(existingNote.title);
+            setContent(existingNote.content);
+            setEditNoteId(existingNote._id);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const handleSaveEdit = async (e) => {
+        // Prevent the form from causing a page reload
+        e.preventDefault();
+        if(!title.trim() && !content.trim()) return;
+
+        const noteToEdit = notes.find((n) => n._id === editNoteId);
+        if (!noteToEdit) return;
+
+        const updatedNoteData = {
+            ...noteToEdit,
+            title: title.trim(),
+            content: content.trim(),
+        };
+
+        setSaving(true);
+        const prev = notes;
+
+        try {
+            // Optimistic update
+            const filteredNotes = notes.filter((n) => n._id !== noteToEdit._id);
+            setNotes((prevNotes) => [updatedNoteData, ...filteredNotes]);
+
+            // Send update to server and use the server response to update local state
+            const updatedNote = await updateNote(updatedNoteData);
+            if (!updatedNote || !updatedNote._id) {
+                throw new Error("Error updating note.");
+            }
+
+            // Replace optimistic entry with server-authoritative data
+            setNotes((prevNotes) => prevNotes.map((n) => (n._id === noteToEdit._id ? updatedNote : n)));
+        } catch (err) {
+            console.error(err, "Reverting UI.");
+            setNotes(prev);
+        } finally {
+            // Clear the form
+            setTitle("");
+            setContent("");
+            setSaving(false);
+            setEditNoteId(undefined);
+        }
+    }
+
+    const handleCancel = async () => {
+        setTitle("");
+        setContent("");
+        setEditNoteId(undefined);
+    }
+
     return (
         <div className="notes-container">
             <h1>Notes</h1>
 
-            <form className="note-form" onSubmit={handleAdd}>
+            <form className="note-form" onSubmit={editNoteId? handleSaveEdit: handleAdd}>
                 <input
                     placeholder="Title"
                     value={title}
@@ -85,8 +153,10 @@ const Notes = () => {
                 />
 
                 <button type="submit" disabled = {saving}>
-                    {saving ? "Saving..." : "Add note"}
+                    {saving ? "Saving..." : editNoteId? "Edit Note" : "Add note"}
                 </button>
+
+                <button onClick={handleCancel}>Cancel</button>
             </form>
 
             {loading ? (
@@ -96,7 +166,8 @@ const Notes = () => {
                     <div className="note-card" key={note._id}>
                         <h4>{note.title}</h4>
                         <p>{note.content}</p>
-                        <button onClick={() => handleDelete(note._id)}>Delete note</button>
+                        <button className="red-button" onClick={() => handleDelete(note._id)}>Delete</button>
+                        <button disabled={editNoteId} onClick={() => handleEdit(note)}>Edit</button>
                     </div>
                 ))
             )}

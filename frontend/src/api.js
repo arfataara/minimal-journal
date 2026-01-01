@@ -32,6 +32,15 @@ export const createNote = async (note) => {
   return response.data;
 };
 
+export const updateNote = async (note) => {
+  const payload = {
+    title: note.title,
+    content: note.content,
+  };
+  const response = await API.put(`/notes/${note._id}`, payload);
+  return response.data;
+};
+
 export const deleteNote = async (id) => {
   const response = await API.delete(`/notes/${id}`);
   return response.data;

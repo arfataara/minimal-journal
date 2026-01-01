@@ -26,6 +26,7 @@ const Note = mongoose.model("Note", NoteSchema);
 
 // CREATE
 app.post("/notes", async (request, response) => {
+  try {
   // Validate request body
   if (request.body.title === "" && request.body.content === "") {
     return response
@@ -35,21 +36,56 @@ app.post("/notes", async (request, response) => {
 
   const note = await Note.create(request.body);
   response.status(201).json(note);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+// UPDATE
+app.put("/notes/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (req.body.title === "" && req.body.content === "") {
+      return res
+        .status(400)
+        .json({ error: "Note must have a title or content" });
+    }
+
+    const updatedNote = await Note.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedNote) return res.status(404).json({ error: "Note not found" });
+
+    return res.status(200).json(updatedNote);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET
 app.get("/notes", async (request, response) => {
+  try {
   const notes = await Note.find().sort({ createdAt: -1 });
   response.json(notes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // DELETE
 app.delete("/notes/:id", async (request, response) => {
+  try {
   const deleted = await Note.findByIdAndDelete(request.params.id);
 
   if (!deleted) return response.sendStatus(404);
 
   response.sendStatus(204);
+  } catch (err) {
+    response.status(500).json({ error: err.message });
+  }
 });
 
 // connect DB then start server
